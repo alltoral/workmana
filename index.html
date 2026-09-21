@@ -180,6 +180,21 @@
   .chip.active{border-color:var(--black); color:var(--white); background:var(--black);}
 
   /* ---------- filter panel ---------- */
+  .btn-filter-toggle{
+    display:flex; align-items:center; gap:7px;
+    background:var(--bg-elev); border:1px solid var(--border); color:var(--gray);
+    border-radius:999px; padding:9px 16px; cursor:pointer; font-size:12.5px;
+    font-family:var(--font-condensed); font-weight:600; letter-spacing:1px; text-transform:uppercase;
+    transition:all .15s ease;
+  }
+  .btn-filter-toggle:hover{color:var(--white);}
+  .btn-filter-toggle.open{background:var(--black); color:var(--white); border-color:var(--black);}
+  .btn-filter-toggle .filter-arrow{display:inline-block; transition:transform .18s ease; font-size:13px;}
+  .btn-filter-toggle.open .filter-arrow{transform:rotate(180deg);}
+  .filter-count{
+    background:var(--yellow); color:var(--black); border-radius:999px; min-width:17px; height:17px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800; padding:0 5px;
+  }
   .filter-panel{
     margin:0 28px 16px; padding:16px 18px 18px; background:var(--bg-elev); border:1px solid var(--border);
     border-radius:20px; display:flex; flex-direction:column; gap:13px;
@@ -874,7 +889,20 @@
   <div class="page-head-meta" id="headMeta"></div>
 </section>
 
-<div class="filter-panel" id="filterPanel">
+<div class="toolbar">
+  <div class="view-tabs">
+    <button class="view-tab active" data-view="kanban">Kanban</button>
+    <button class="view-tab" data-view="timeline">Timeline</button>
+  </div>
+  <input type="text" class="search-input" id="searchInput" placeholder="Buscar tarefa...">
+  <button type="button" class="btn-filter-toggle" id="btnToggleFilters">
+    <span>Filtros</span><span class="filter-count" id="filterCountBadge" style="display:none;">0</span><span class="filter-arrow">⌄</span>
+  </button>
+  <div class="spacer"></div>
+  <button class="btn-primary" id="btnNewTask">+ Nova tarefa</button>
+</div>
+
+<div class="filter-panel" id="filterPanel" style="display:none;">
   <div class="filter-panel-head">
     <span class="filter-panel-title">Filtros</span>
     <button type="button" class="filter-clear-btn" id="btnClearFilters" style="display:none;">Limpar filtros</button>
@@ -895,16 +923,6 @@
     <span class="filter-group-label">Data específica</span>
     <input type="date" id="filterDateInput" class="filter-date-input">
   </div>
-</div>
-
-<div class="toolbar">
-  <div class="view-tabs">
-    <button class="view-tab active" data-view="kanban">Kanban</button>
-    <button class="view-tab" data-view="timeline">Timeline</button>
-  </div>
-  <input type="text" class="search-input" id="searchInput" placeholder="Buscar tarefa...">
-  <div class="spacer"></div>
-  <button class="btn-primary" id="btnNewTask">+ Nova tarefa</button>
 </div>
 
 <main>
@@ -1384,14 +1402,33 @@
     });
   }
 
+  function activeFilterCount(){
+    var n = 0;
+    if(ui.filterAssignee) n++;
+    if(ui.filterToday) n++;
+    if(ui.filterOverdue) n++;
+    if(ui.filterPriority) n++;
+    if(ui.filterDate) n++;
+    return n;
+  }
+
   function hasActiveFilters(){
-    return !!(ui.filterAssignee || ui.filterToday || ui.filterOverdue || ui.filterPriority || ui.filterDate);
+    return activeFilterCount() > 0;
   }
 
   function renderClearFiltersBtn(){
     var btn = document.getElementById("btnClearFilters");
-    if(!btn) return;
-    btn.style.display = hasActiveFilters() ? "" : "none";
+    if(btn) btn.style.display = hasActiveFilters() ? "" : "none";
+    var count = activeFilterCount();
+    var badge = document.getElementById("filterCountBadge");
+    var toggleBtn = document.getElementById("btnToggleFilters");
+    if(badge){
+      badge.textContent = count;
+      badge.style.display = count > 0 ? "" : "none";
+    }
+    if(toggleBtn){
+      toggleBtn.classList.toggle("open", document.getElementById("filterPanel").style.display !== "none");
+    }
   }
 
   function filteredTasks(){
@@ -1798,6 +1835,13 @@
   });
 
   /* ---------- filter panel ---------- */
+  document.getElementById("btnToggleFilters").addEventListener("click", function(){
+    var panel = document.getElementById("filterPanel");
+    var isOpen = panel.style.display !== "none";
+    panel.style.display = isOpen ? "none" : "flex";
+    this.classList.toggle("open", !isOpen);
+  });
+
   document.getElementById("filterDateInput").addEventListener("change", function(e){
     ui.filterDate = e.target.value || "";
     renderAll();
