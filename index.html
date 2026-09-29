@@ -617,6 +617,35 @@
   .team-modal-hint{font-size:11.5px; color:var(--gray); margin:-10px 0 14px; line-height:1.5;}
   .add-member-row input{flex:1;}
 
+  /* report modal */
+  .report-total-box{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    background:var(--black); border-radius:12px; padding:14px 18px; margin:14px 0 16px;
+  }
+  .report-total-label{font-family:var(--font-condensed); font-weight:600; letter-spacing:1px; font-size:12px; text-transform:uppercase; color:var(--gray);}
+  .report-total-value{font-family:var(--font-condensed); font-weight:800; font-size:24px; color:var(--yellow);}
+  .report-list{display:flex; flex-direction:column; gap:8px; max-height:50vh; overflow-y:auto;}
+  .report-member{background:var(--bg-elev-2); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .report-member-head{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer;
+  }
+  .report-member-head .name{flex:1; font-size:13.5px; min-width:0;}
+  .report-member-hours{font-family:var(--font-condensed); font-weight:700; font-size:13.5px; color:#fff; letter-spacing:0.5px;}
+  .report-member-value{font-family:var(--font-condensed); font-weight:700; font-size:12px; color:var(--yellow); margin-left:8px;}
+  .report-member-caret{color:var(--gray-dim); font-size:10px; transition:transform .15s ease; flex-shrink:0;}
+  .report-member.open .report-member-caret{transform:rotate(180deg);}
+  .report-member-tasks{display:none; flex-direction:column; gap:0; border-top:1px solid var(--border);}
+  .report-member.open .report-member-tasks{display:flex;}
+  .report-task-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:8px 12px 8px 40px; font-size:12.5px; color:var(--gray); border-top:1px solid rgba(255,255,255,0.06);
+  }
+  .report-task-row:first-child{border-top:none;}
+  .report-task-row .task-name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .report-task-row .task-hours{font-family:var(--font-condensed); font-weight:600; color:#fff; flex-shrink:0;}
+  .report-empty-tasks{padding:10px 12px 10px 40px; font-size:12px; color:var(--gray-dim);}
+  .report-empty{text-align:center; padding:24px; color:var(--gray-dim); font-size:13px;}
+
   /* empty state */
   .empty-state{
     text-align:center; padding:60px 20px; color:var(--gray);
@@ -881,6 +910,7 @@
     <span class="offline-badge" id="offlineBadge" style="display:none;">● Offline</span>
     <div class="current-user-chip" id="currentUserChip"></div>
     <button class="btn-team" id="btnInstallApp" style="display:none;">⬇ Instalar app</button>
+    <button class="btn-team" id="btnOpenReport"><span class="label">Relatório</span> ⏱</button>
     <button class="btn-team" id="btnOpenTeam"><span class="label">Equipe</span> ⚙</button>
     <button class="btn-logout" id="btnLogout">Sair</button>
   </div>
@@ -1072,6 +1102,19 @@
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" id="btnCloseTeam">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report Modal -->
+<div class="overlay" id="reportOverlay">
+  <div class="modal">
+    <h2>Relatório de horas</h2>
+    <div class="subtitle">Tempo total registrado por pessoa, desde que o cronômetro começou a ser usado</div>
+    <div class="report-total-box" id="reportTotalBox"></div>
+    <div class="report-list" id="reportList"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnCloseReport">Fechar</button>
     </div>
   </div>
 </div>
@@ -2682,6 +2725,105 @@
     renderTeamList();
     renderAll();
   });
+
+  /* ---------- hours report ---------- */
+  var reportOverlay = document.getElementById("reportOverlay");
+
+  function renderReport(){
+    var totalBox = document.getElementById("reportTotalBox");
+    var list = document.getElementById("reportList");
+    list.innerHTML = "";
+
+    var perMember = state.team.map(function(m){
+      var tasks = state.tasks.filter(function(t){ return t.assigneeId === m.id; })
+        .map(function(t){ return {task:t, secs:elapsedSeconds(t)}; })
+        .filter(function(x){ return x.secs > 0; })
+        .sort(function(a,b){ return b.secs - a.secs; });
+      var total = tasks.reduce(function(sum,x){ return sum + x.secs; }, 0);
+      return {member:m, tasks:tasks, total:total};
+    }).sort(function(a,b){ return b.total - a.total; });
+
+    var grandTotal = perMember.reduce(function(sum,p){ return sum + p.total; }, 0);
+
+    totalBox.innerHTML = "";
+    var lbl = document.createElement("span");
+    lbl.className = "report-total-label";
+    lbl.textContent = "Total da equipe";
+    var val = document.createElement("span");
+    val.className = "report-total-value";
+    val.textContent = formatDuration(grandTotal);
+    totalBox.appendChild(lbl);
+    totalBox.appendChild(val);
+
+    if(!perMember.length){
+      var empty = document.createElement("div");
+      empty.className = "report-empty";
+      empty.textContent = "Ninguém na equipe ainda.";
+      list.appendChild(empty);
+      return;
+    }
+
+    perMember.forEach(function(p){
+      var row = document.createElement("div");
+      row.className = "report-member";
+
+      var head = document.createElement("div");
+      head.className = "report-member-head";
+      head.appendChild(avatarEl(p.member, 26));
+      var name = document.createElement("span");
+      name.className = "name";
+      name.textContent = p.member.name;
+      head.appendChild(name);
+      var hours = document.createElement("span");
+      hours.className = "report-member-hours";
+      hours.textContent = formatDuration(p.total);
+      head.appendChild(hours);
+      if(p.member.id === currentUserId && p.member.hourlyRate){
+        var value = document.createElement("span");
+        value.className = "report-member-value";
+        value.textContent = formatCurrencyBRL((p.total/3600) * p.member.hourlyRate);
+        head.appendChild(value);
+      }
+      var caret = document.createElement("span");
+      caret.className = "report-member-caret";
+      caret.textContent = "▾";
+      head.appendChild(caret);
+      head.addEventListener("click", function(){ row.classList.toggle("open"); });
+      row.appendChild(head);
+
+      var tasksBox = document.createElement("div");
+      tasksBox.className = "report-member-tasks";
+      if(!p.tasks.length){
+        var noTasks = document.createElement("div");
+        noTasks.className = "report-empty-tasks";
+        noTasks.textContent = "Nenhum tempo registrado ainda.";
+        tasksBox.appendChild(noTasks);
+      } else {
+        p.tasks.forEach(function(x){
+          var tr = document.createElement("div");
+          tr.className = "report-task-row";
+          var tn = document.createElement("span");
+          tn.className = "task-name";
+          tn.textContent = x.task.title;
+          var th = document.createElement("span");
+          th.className = "task-hours";
+          th.textContent = formatDuration(x.secs);
+          tr.appendChild(tn);
+          tr.appendChild(th);
+          tasksBox.appendChild(tr);
+        });
+      }
+      row.appendChild(tasksBox);
+      list.appendChild(row);
+    });
+  }
+
+  document.getElementById("btnOpenReport").addEventListener("click", function(){
+    renderReport();
+    reportOverlay.classList.add("open");
+  });
+  document.getElementById("btnCloseReport").addEventListener("click", function(){ reportOverlay.classList.remove("open"); });
+  reportOverlay.addEventListener("click", function(e){ if(e.target===reportOverlay) reportOverlay.classList.remove("open"); });
   document.getElementById("newMemberName").addEventListener("keydown", function(e){
     if(e.key === "Enter"){ document.getElementById("btnAddMember").click(); }
   });
