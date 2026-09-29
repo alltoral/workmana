@@ -189,7 +189,7 @@
   }
   .btn-filter-toggle:hover{color:var(--white);}
   .btn-filter-toggle.open{background:var(--black); color:var(--white); border-color:var(--black);}
-  .btn-filter-toggle .filter-arrow{display:inline-block; transition:transform .18s ease; font-size:13px;}
+  .btn-filter-toggle .filter-arrow{display:inline-flex; align-items:center; justify-content:center; transition:transform .18s ease; color:currentColor;}
   .btn-filter-toggle.open .filter-arrow{transform:rotate(180deg);}
   .filter-count{
     background:var(--yellow); color:var(--black); border-radius:999px; min-width:17px; height:17px;
@@ -506,9 +506,17 @@
     font-family:var(--font-condensed); font-weight:600;
   }
   .card.overdue-card .checklist-count-badge{color:var(--black);}
-  .calc-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .calc-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;}
   .calc-label{font-size:12px; color:var(--gray);}
   .calc-value{font-size:13px; font-weight:700; color:#fff; font-family:var(--font-condensed); letter-spacing:0.5px;}
+  .calc-time-edit{display:flex; align-items:center; gap:5px;}
+  .calc-time-input{
+    width:48px; background:rgba(255,255,255,0.1); border:1px solid var(--border); color:#fff;
+    border-radius:6px; padding:5px 6px; font-size:13px; font-family:var(--font-condensed); font-weight:700;
+    text-align:center; -moz-appearance:textfield;
+  }
+  .calc-time-input::-webkit-outer-spin-button, .calc-time-input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .calc-time-unit{font-size:11.5px; color:var(--gray-dim); margin-right:6px; font-family:var(--font-condensed);}
   .calc-rate-row{margin-bottom:12px;}
   .calc-rate-row label{
     display:block; font-family:var(--font-condensed); font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
@@ -896,7 +904,7 @@
   </div>
   <input type="text" class="search-input" id="searchInput" placeholder="Buscar tarefa...">
   <button type="button" class="btn-filter-toggle" id="btnToggleFilters">
-    <span>Filtros</span><span class="filter-count" id="filterCountBadge" style="display:none;">0</span><span class="filter-arrow">⌄</span>
+    <span>Filtros</span><span class="filter-count" id="filterCountBadge" style="display:none;">0</span><span class="filter-arrow"><svg width="11" height="7" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5.5 5.5L10 1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
   </button>
   <div class="spacer"></div>
   <button class="btn-primary" id="btnNewTask">+ Nova tarefa</button>
@@ -990,9 +998,12 @@
     <div class="field" id="taskCalcSection" style="display:none;">
       <label>Calculadora de horas</label>
       <div class="calc-box">
-        <div class="calc-row">
+        <div class="calc-row calc-row-edit">
           <span class="calc-label">Tempo registrado</span>
-          <span class="calc-value" id="calcTimeValue">0min</span>
+          <div class="calc-time-edit">
+            <input type="number" id="calcHoursInput" min="0" step="1" class="calc-time-input"><span class="calc-time-unit">h</span>
+            <input type="number" id="calcMinutesInput" min="0" max="59" step="1" class="calc-time-input"><span class="calc-time-unit">min</span>
+          </div>
         </div>
         <div class="calc-rate-row">
           <label for="calcHourlyRate">Valor da sua hora (R$)</label>
@@ -1245,7 +1256,12 @@
     }
     section.style.display = "";
     var secs = elapsedSeconds(task);
-    document.getElementById("calcTimeValue").textContent = formatDuration(secs);
+    var hEl = document.getElementById("calcHoursInput");
+    var mEl = document.getElementById("calcMinutesInput");
+    if(document.activeElement !== hEl && document.activeElement !== mEl){
+      hEl.value = Math.floor(secs/3600);
+      mEl.value = Math.floor((secs%3600)/60);
+    }
     var me = memberById(currentUserId);
     var rate = (me && me.hourlyRate) ? me.hourlyRate : 0;
     var rateInput = document.getElementById("calcHourlyRate");
@@ -1265,6 +1281,22 @@
   document.getElementById("calcHourlyRate").addEventListener("blur", function(){
     saveState(state);
   });
+
+  function applyManualTime(){
+    var task = state.tasks.find(function(t){ return t.id===ui.editingTaskId; });
+    if(!task) return;
+    var hEl = document.getElementById("calcHoursInput");
+    var mEl = document.getElementById("calcMinutesInput");
+    var h = parseInt(hEl.value, 10); if(isNaN(h) || h<0) h = 0;
+    var m = parseInt(mEl.value, 10); if(isNaN(m) || m<0) m = 0; if(m>59) m = 59;
+    hEl.value = h; mEl.value = m;
+    task.timeSpentSeconds = (h*3600) + (m*60);
+    if(task.activeStartedAt){ task.activeStartedAt = new Date().toISOString(); }
+    saveState(state);
+    updateCalcSection(ui.editingTaskId);
+  }
+  document.getElementById("calcHoursInput").addEventListener("change", applyManualTime);
+  document.getElementById("calcMinutesInput").addEventListener("change", applyManualTime);
 
   function anyTimerActive(){
     return state.tasks.some(function(t){ return !!t.activeStartedAt; });
@@ -3161,8 +3193,23 @@
 
   if("serviceWorker" in navigator){
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("./sw.js").catch(function(err){
+      navigator.serviceWorker.register("./sw.js").then(function(reg){
+        // check right away for a newer sw.js, and again whenever the tab
+        // regains focus, so updates show up without a manual cache clear
+        reg.update();
+        document.addEventListener("visibilitychange", function(){
+          if(document.visibilityState === "visible") reg.update();
+        });
+      }).catch(function(err){
         console.error("Falha ao registrar o service worker:", err);
+      });
+      // once a newer service worker takes control, reload so the fresh
+      // version is actually shown
+      var reloaded = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function(){
+        if(reloaded) return;
+        reloaded = true;
+        window.location.reload();
       });
     });
   }
