@@ -618,33 +618,88 @@
   .add-member-row input{flex:1;}
 
   /* report modal */
+  .modal.report-modal{max-width:780px;}
+  .report-filters{display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:6px;}
+  .report-filter{display:flex; flex-direction:column; gap:5px; min-width:0;}
+  .report-filter label{font-family:var(--font-condensed); font-weight:600; letter-spacing:1px; text-transform:uppercase; font-size:10.5px; color:var(--gray);}
+  .report-filter select, .report-filter input[type="date"]{
+    background:var(--bg-elev-2); border:1px solid var(--border); color:var(--white);
+    border-radius:8px; padding:8px 10px; font-size:13px; font-family:var(--font-body);
+  }
   .report-total-box{
-    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
-    background:var(--black); border-radius:12px; padding:14px 18px; margin:14px 0 16px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    background:var(--black); border-radius:12px; padding:14px 18px; margin:14px 0 12px;
   }
   .report-total-label{font-family:var(--font-condensed); font-weight:600; letter-spacing:1px; font-size:12px; text-transform:uppercase; color:var(--gray);}
   .report-total-value{font-family:var(--font-condensed); font-weight:800; font-size:24px; color:var(--yellow);}
-  .report-list{display:flex; flex-direction:column; gap:8px; max-height:50vh; overflow-y:auto;}
-  .report-member{background:var(--bg-elev-2); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
-  .report-member-head{
-    display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer;
+  .report-total-extra{font-family:var(--font-condensed); font-weight:700; font-size:13px; color:#fff;}
+  .report-summary{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+  .report-summary-chip{
+    background:var(--bg-elev-2); border:1px solid var(--border); border-radius:999px; padding:4px 11px;
+    font-size:12px; color:var(--gray); font-family:var(--font-condensed); font-weight:600; letter-spacing:0.3px;
   }
-  .report-member-head .name{flex:1; font-size:13.5px; min-width:0;}
-  .report-member-hours{font-family:var(--font-condensed); font-weight:700; font-size:13.5px; color:#fff; letter-spacing:0.5px;}
-  .report-member-value{font-family:var(--font-condensed); font-weight:700; font-size:12px; color:var(--yellow); margin-left:8px;}
-  .report-member-caret{color:var(--gray-dim); font-size:10px; transition:transform .15s ease; flex-shrink:0;}
-  .report-member.open .report-member-caret{transform:rotate(180deg);}
-  .report-member-tasks{display:none; flex-direction:column; gap:0; border-top:1px solid var(--border);}
-  .report-member.open .report-member-tasks{display:flex;}
-  .report-task-row{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:8px 12px 8px 40px; font-size:12.5px; color:var(--gray); border-top:1px solid rgba(255,255,255,0.06);
+  .report-summary-chip b{color:#fff; margin-left:4px;}
+  .report-edit-hint{font-size:11.5px; color:var(--gray); margin-bottom:10px; line-height:1.5;}
+  .report-table-head, .report-row{
+    display:grid; grid-template-columns:minmax(110px,1fr) minmax(130px,1.5fr) 128px 112px 26px; gap:6px; align-items:center;
   }
-  .report-task-row:first-child{border-top:none;}
-  .report-task-row .task-name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .report-task-row .task-hours{font-family:var(--font-condensed); font-weight:600; color:#fff; flex-shrink:0;}
-  .report-empty-tasks{padding:10px 12px 10px 40px; font-size:12px; color:var(--gray-dim);}
-  .report-empty{text-align:center; padding:24px; color:var(--gray-dim); font-size:13px;}
+  .report-table-head{
+    font-family:var(--font-condensed); font-weight:600; letter-spacing:1px; text-transform:uppercase;
+    font-size:10.5px; color:var(--gray-dim); padding:0 2px 6px;
+  }
+  .report-rows{display:flex; flex-direction:column; gap:6px; max-height:42vh; overflow-y:auto; padding-right:2px;}
+  .report-row input[type="text"], .report-row input[type="date"], .report-row input[type="number"], .report-row select{
+    width:100%; min-width:0; background:var(--bg-elev-2); border:1px solid var(--border); color:var(--white);
+    border-radius:7px; padding:7px 8px; font-size:12.5px; font-family:var(--font-body);
+  }
+  .report-row input:focus, .report-row select:focus{border-color:#fff; outline:none;}
+  .report-hours-cell{display:flex; align-items:center; gap:4px;}
+  .report-hours-cell input{width:44px !important; text-align:center; padding:7px 3px !important; -moz-appearance:textfield;}
+  .report-hours-cell input::-webkit-outer-spin-button, .report-hours-cell input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .report-hours-cell span{font-size:11px; color:var(--gray-dim); font-family:var(--font-condensed);}
+  .report-row-remove{background:none; border:none; color:var(--gray-dim); cursor:pointer; font-size:16px; line-height:1; padding:0;}
+  .report-row-remove:hover{color:var(--danger);}
+  .report-empty{text-align:center; padding:22px; color:var(--gray-dim); font-size:13px;}
+  .report-add-row{margin-top:10px;}
+  .report-actions{flex-wrap:wrap;}
+  .report-print-header{display:none;}
+  @media (max-width:640px){
+    .report-table-head{display:none;}
+    .report-row{grid-template-columns:1fr 1fr; background:rgba(0,0,0,0.12); border-radius:8px; padding:8px;}
+    .report-row .col-task{grid-column:1 / -1;}
+    .report-row .report-row-remove{grid-column:1 / -1; justify-self:end; font-size:13px; padding:2px 6px;}
+    .report-row .report-row-remove::after{content:' apagar linha';}
+  }
+  @page{margin:14mm;}
+  @media print{
+    body.printing-report #appRoot > *:not(#reportOverlay){display:none !important;}
+    html:has(body.printing-report), body.printing-report{background:#fff !important; background-image:none !important; height:auto !important; overflow:visible !important;}
+    body.printing-report::before, body.printing-report::after{display:none !important;}
+    body.printing-report #loginScreen{display:none !important;}
+    body.printing-report #reportOverlay{position:static; display:block !important; background:#fff; padding:0; backdrop-filter:none;}
+    body.printing-report #reportOverlay .modal{
+      max-width:none; max-height:none; overflow:visible; border:none; background:#fff; color:#000; padding:0; border-radius:0;
+    }
+    body.printing-report .report-modal h2, body.printing-report .report-modal .subtitle{color:#000;}
+    body.printing-report .report-filters, body.printing-report .report-actions, body.printing-report .report-edit-hint,
+    body.printing-report .report-add-row, body.printing-report .report-row-remove{display:none !important;}
+    body.printing-report .report-print-header{display:block; font-size:13px; color:#000; margin-bottom:12px;}
+    body.printing-report .report-total-box{background:#f2f2f2; border:1px solid #bbb;}
+    body.printing-report .report-total-label, body.printing-report .report-total-extra{color:#000;}
+    body.printing-report .report-total-value{color:#000;}
+    body.printing-report .report-summary-chip{background:#fff; border:1px solid #bbb; color:#000;}
+    body.printing-report .report-summary-chip b{color:#000;}
+    body.printing-report .report-table-head{color:#444; display:grid;}
+    body.printing-report .report-table-head, body.printing-report .report-row{grid-template-columns:1fr 1.5fr 100px 80px;}
+    body.printing-report .report-table-head span:last-child{display:none;}
+    body.printing-report .report-rows{max-height:none; overflow:visible;}
+    body.printing-report .report-row{background:none; padding:0; border-bottom:1px solid #ddd; border-radius:0;}
+    body.printing-report .report-row input, body.printing-report .report-row select{
+      background:none !important; border:none !important; color:#000 !important; padding:5px 2px !important;
+      -webkit-appearance:none; appearance:none;
+    }
+    body.printing-report .report-hours-cell span{color:#000;}
+  }
 
   /* empty state */
   .empty-state{
@@ -1108,12 +1163,47 @@
 
 <!-- Report Modal -->
 <div class="overlay" id="reportOverlay">
-  <div class="modal">
+  <div class="modal report-modal">
     <h2>Relatório de horas</h2>
-    <div class="subtitle">Tempo total registrado por pessoa, desde que o cronômetro começou a ser usado</div>
+    <div class="subtitle">Escolha o período, confira e ajuste as horas, depois baixe</div>
+    <div class="report-print-header" id="reportPrintHeader"></div>
+    <div class="report-filters">
+      <div class="report-filter">
+        <label for="reportPeriodSelect">Período</label>
+        <select id="reportPeriodSelect">
+          <option value="month">Este mês</option>
+          <option value="lastmonth">Mês passado</option>
+          <option value="7">Últimos 7 dias</option>
+          <option value="30">Últimos 30 dias</option>
+          <option value="today">Hoje</option>
+          <option value="all">Todo o período</option>
+          <option value="custom">Personalizado</option>
+        </select>
+      </div>
+      <div class="report-filter">
+        <label for="reportFrom">De</label>
+        <input type="date" id="reportFrom">
+      </div>
+      <div class="report-filter">
+        <label for="reportTo">Até</label>
+        <input type="date" id="reportTo">
+      </div>
+      <div class="report-filter">
+        <label for="reportMemberSelect">Pessoa</label>
+        <select id="reportMemberSelect"></select>
+      </div>
+    </div>
     <div class="report-total-box" id="reportTotalBox"></div>
-    <div class="report-list" id="reportList"></div>
-    <div class="modal-actions">
+    <div class="report-summary" id="reportSummary"></div>
+    <div class="report-edit-hint">Dá pra editar qualquer linha (pessoa, tarefa, data e horas), apagar ou adicionar linhas. As edições valem só pra este relatório e não mudam as tarefas. Trocar o período refaz o relatório a partir das tarefas.</div>
+    <div class="report-table-head"><span>Pessoa</span><span>Tarefa</span><span>Data</span><span>Horas</span><span></span></div>
+    <div class="report-rows" id="reportRows"></div>
+    <button type="button" class="btn-secondary report-add-row" id="btnReportAddRow">+ Adicionar linha</button>
+    <div class="modal-actions report-actions">
+      <button class="btn-primary" id="btnReportCSV">Baixar planilha (CSV)</button>
+      <button class="btn-secondary" id="btnReportPrint">Imprimir / PDF</button>
+      <button class="btn-secondary" id="btnReportReset">Refazer</button>
+      <div class="spacer"></div>
       <button class="btn-secondary" id="btnCloseReport">Fechar</button>
     </div>
   </div>
@@ -1170,6 +1260,13 @@
       if(!("participantIds" in t) || !Array.isArray(t.participantIds)) t.participantIds = [];
       if(!("checklist" in t) || !Array.isArray(t.checklist)) t.checklist = [];
       if(!("completedAt" in t)) t.completedAt = (t.status === "done") ? new Date().toISOString() : null;
+      if(!("timeLog" in t) || !Array.isArray(t.timeLog)) t.timeLog = [];
+      // tempo acumulado antes do registro por data: vira uma entrada "legacy"
+      var logged = t.timeLog.reduce(function(sum,e){ return sum + (e.seconds||0); }, 0);
+      var missing = (t.timeSpentSeconds||0) - logged;
+      if(missing > 5){
+        t.timeLog.push({id:uid(), date:((t.createdAt||"").slice(0,10) || localISO(new Date())), seconds:Math.round(missing*100)/100, kind:"legacy", memberId:t.assigneeId||null});
+      }
     });
     return s;
   }
@@ -1325,6 +1422,55 @@
     saveState(state);
   });
 
+  /* ---------- registro de tempo por data (base do relatório) ---------- */
+  function localISO(d){
+    var m = d.getMonth()+1, day = d.getDate();
+    return d.getFullYear() + "-" + (m<10?"0":"") + m + "-" + (day<10?"0":"") + day;
+  }
+  function shiftISO(iso, n){
+    var p = iso.split("-");
+    return localISO(new Date(+p[0], +p[1]-1, +p[2]+n));
+  }
+  // divide uma sessão [startMs, endMs] em pedaços por dia (meia-noite local)
+  function splitByDay(startMs, endMs){
+    var out = [];
+    var cur = startMs;
+    while(cur < endMs){
+      var d = new Date(cur);
+      var nextMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1).getTime();
+      var chunkEnd = Math.min(endMs, nextMidnight);
+      out.push({date:localISO(d), seconds:(chunkEnd-cur)/1000});
+      cur = chunkEnd;
+    }
+    return out;
+  }
+  function logTime(task, seconds, kind, dateISO){
+    seconds = Math.round(seconds*100)/100;
+    if(!(seconds > 0)) return;
+    if(!Array.isArray(task.timeLog)) task.timeLog = [];
+    task.timeLog.push({id:uid(), date:dateISO || localISO(new Date()), seconds:seconds, kind:kind, memberId:task.assigneeId||null});
+  }
+  // ao reduzir o tempo manualmente, desconta das entradas mais recentes
+  function reduceLog(task, seconds){
+    if(!Array.isArray(task.timeLog)) return;
+    var order = task.timeLog.slice().sort(function(a,b){ return a.date < b.date ? 1 : (a.date > b.date ? -1 : 0); });
+    for(var i=0; i<order.length && seconds > 0.005; i++){
+      var take = Math.min(order[i].seconds, seconds);
+      order[i].seconds = Math.round((order[i].seconds - take)*100)/100;
+      seconds -= take;
+    }
+    task.timeLog = task.timeLog.filter(function(e){ return e.seconds > 0.005; });
+  }
+  // fecha a sessão em andamento: soma no total e grava no registro por dia
+  function closeSession(t){
+    var start = new Date(t.activeStartedAt).getTime();
+    var end = Date.now();
+    var secs = Math.max(0, (end-start)/1000);
+    t.timeSpentSeconds = (t.timeSpentSeconds||0) + secs;
+    splitByDay(start, end).forEach(function(c){ logTime(t, c.seconds, "timer", c.date); });
+    t.activeStartedAt = null;
+  }
+
   function applyManualTime(){
     var task = state.tasks.find(function(t){ return t.id===ui.editingTaskId; });
     if(!task) return;
@@ -1333,8 +1479,14 @@
     var h = parseInt(hEl.value, 10); if(isNaN(h) || h<0) h = 0;
     var m = parseInt(mEl.value, 10); if(isNaN(m) || m<0) m = 0; if(m>59) m = 59;
     hEl.value = h; mEl.value = m;
-    task.timeSpentSeconds = (h*3600) + (m*60);
-    if(task.activeStartedAt){ task.activeStartedAt = new Date().toISOString(); }
+    var wasActive = !!task.activeStartedAt;
+    if(wasActive){ closeSession(task); }
+    var newTotal = (h*3600) + (m*60);
+    var delta = newTotal - (task.timeSpentSeconds||0);
+    if(delta > 0) logTime(task, delta, "manual");
+    else if(delta < 0) reduceLog(task, -delta);
+    task.timeSpentSeconds = newTotal;
+    if(wasActive){ task.activeStartedAt = new Date().toISOString(); }
     saveState(state);
     updateCalcSection(ui.editingTaskId);
   }
@@ -1347,8 +1499,7 @@
   function startTimer(taskId){
     state.tasks.forEach(function(t){
       if(t.activeStartedAt && t.assigneeId===currentUserId && t.id!==taskId){
-        t.timeSpentSeconds = (t.timeSpentSeconds||0) + Math.max(0,(Date.now()-new Date(t.activeStartedAt).getTime())/1000);
-        t.activeStartedAt = null;
+        closeSession(t);
       }
     });
     var task = state.tasks.find(function(t){ return t.id===taskId; });
@@ -1359,8 +1510,7 @@
   function stopTimer(taskId){
     var task = state.tasks.find(function(t){ return t.id===taskId; });
     if(task && task.activeStartedAt){
-      task.timeSpentSeconds = (task.timeSpentSeconds||0) + Math.max(0,(Date.now()-new Date(task.activeStartedAt).getTime())/1000);
-      task.activeStartedAt = null;
+      closeSession(task);
       saveState(state);
       renderAll();
     }
@@ -2728,102 +2878,368 @@
 
   /* ---------- hours report ---------- */
   var reportOverlay = document.getElementById("reportOverlay");
+  var report = { rows:[], dirty:false, last:{period:"month", from:"", to:"", member:""} };
 
-  function renderReport(){
+  function fmtBR(iso){
+    if(!iso) return "";
+    var p = iso.split("-");
+    return p[2] + "/" + p[1] + "/" + p[0];
+  }
+  function fmtHM(seconds){
+    var mins = Math.round(seconds/60);
+    var h = Math.floor(mins/60), m = mins % 60;
+    return h + "h " + (m<10?"0":"") + m + "min";
+  }
+  function periodRange(key){
+    var today = localISO(new Date());
+    if(key==="all") return {from:"", to:""};
+    if(key==="today") return {from:today, to:today};
+    if(key==="7") return {from:shiftISO(today,-6), to:today};
+    if(key==="30") return {from:shiftISO(today,-29), to:today};
+    var now = new Date();
+    if(key==="month") return {from:localISO(new Date(now.getFullYear(), now.getMonth(), 1)), to:localISO(new Date(now.getFullYear(), now.getMonth()+1, 0))};
+    if(key==="lastmonth") return {from:localISO(new Date(now.getFullYear(), now.getMonth()-1, 1)), to:localISO(new Date(now.getFullYear(), now.getMonth(), 0))};
+    return null;
+  }
+
+  function fillReportMemberSelect(){
+    var sel = document.getElementById("reportMemberSelect");
+    var cur = sel.value;
+    sel.innerHTML = "";
+    var all = document.createElement("option");
+    all.value = ""; all.textContent = "Toda a equipe";
+    sel.appendChild(all);
+    state.team.forEach(function(m){
+      var o = document.createElement("option");
+      o.value = m.id; o.textContent = m.name;
+      sel.appendChild(o);
+    });
+    sel.value = cur || "";
+    if(sel.value !== (cur||"")) sel.value = "";
+  }
+
+  // monta as linhas do relatório a partir do registro de tempo das tarefas
+  function buildReportRows(){
+    var from = document.getElementById("reportFrom").value;
+    var to = document.getElementById("reportTo").value;
+    var memberFilter = document.getElementById("reportMemberSelect").value;
+    var buckets = {};
+    function add(memberId, task, date, secs){
+      if(!memberId || !date) return;
+      if(from && date < from) return;
+      if(to && date > to) return;
+      if(memberFilter && memberId !== memberFilter) return;
+      var key = memberId + "|" + task.id + "|" + date;
+      if(!buckets[key]) buckets[key] = {memberId:memberId, task:task.title, date:date, seconds:0};
+      buckets[key].seconds += secs;
+    }
+    state.tasks.forEach(function(t){
+      (t.timeLog||[]).forEach(function(e){ add(e.memberId || t.assigneeId, t, e.date, e.seconds); });
+      if(t.activeStartedAt){
+        splitByDay(new Date(t.activeStartedAt).getTime(), Date.now()).forEach(function(c){
+          add(t.assigneeId, t, c.date, c.seconds);
+        });
+      }
+    });
+    var rows = Object.keys(buckets).map(function(k){
+      var r = buckets[k];
+      r.seconds = Math.round(r.seconds/60) * 60; // minutos inteiros, pra conferir fácil
+      return r;
+    }).filter(function(r){ return r.seconds > 0; });
+    rows.sort(function(a,b){
+      if(a.date !== b.date) return a.date < b.date ? -1 : 1;
+      var an = (memberById(a.memberId)||{name:""}).name, bn = (memberById(b.memberId)||{name:""}).name;
+      return an < bn ? -1 : an > bn ? 1 : 0;
+    });
+    rows.forEach(function(r){ r.id = uid(); });
+    return rows;
+  }
+
+  function rebuildReport(){
+    report.rows = buildReportRows();
+    report.dirty = false;
+    report.last = {
+      period: document.getElementById("reportPeriodSelect").value,
+      from: document.getElementById("reportFrom").value,
+      to: document.getElementById("reportTo").value,
+      member: document.getElementById("reportMemberSelect").value
+    };
+    renderReportRows();
+  }
+
+  function renderReportSummary(){
     var totalBox = document.getElementById("reportTotalBox");
-    var list = document.getElementById("reportList");
-    list.innerHTML = "";
-
-    var perMember = state.team.map(function(m){
-      var tasks = state.tasks.filter(function(t){ return t.assigneeId === m.id; })
-        .map(function(t){ return {task:t, secs:elapsedSeconds(t)}; })
-        .filter(function(x){ return x.secs > 0; })
-        .sort(function(a,b){ return b.secs - a.secs; });
-      var total = tasks.reduce(function(sum,x){ return sum + x.secs; }, 0);
-      return {member:m, tasks:tasks, total:total};
-    }).sort(function(a,b){ return b.total - a.total; });
-
-    var grandTotal = perMember.reduce(function(sum,p){ return sum + p.total; }, 0);
-
+    var summary = document.getElementById("reportSummary");
+    var total = 0, perMember = {};
+    report.rows.forEach(function(r){
+      total += r.seconds;
+      perMember[r.memberId] = (perMember[r.memberId]||0) + r.seconds;
+    });
     totalBox.innerHTML = "";
     var lbl = document.createElement("span");
     lbl.className = "report-total-label";
-    lbl.textContent = "Total da equipe";
+    lbl.textContent = "Total no período";
     var val = document.createElement("span");
     val.className = "report-total-value";
-    val.textContent = formatDuration(grandTotal);
+    val.textContent = fmtHM(total);
     totalBox.appendChild(lbl);
     totalBox.appendChild(val);
-
-    if(!perMember.length){
-      var empty = document.createElement("div");
-      empty.className = "report-empty";
-      empty.textContent = "Ninguém na equipe ainda.";
-      list.appendChild(empty);
-      return;
+    var me = memberById(currentUserId);
+    if(me && me.hourlyRate && perMember[me.id]){
+      var extra = document.createElement("span");
+      extra.className = "report-total-extra";
+      extra.textContent = "Seu valor: " + formatCurrencyBRL((perMember[me.id]/3600) * me.hourlyRate);
+      totalBox.appendChild(extra);
     }
-
-    perMember.forEach(function(p){
-      var row = document.createElement("div");
-      row.className = "report-member";
-
-      var head = document.createElement("div");
-      head.className = "report-member-head";
-      head.appendChild(avatarEl(p.member, 26));
-      var name = document.createElement("span");
-      name.className = "name";
-      name.textContent = p.member.name;
-      head.appendChild(name);
-      var hours = document.createElement("span");
-      hours.className = "report-member-hours";
-      hours.textContent = formatDuration(p.total);
-      head.appendChild(hours);
-      if(p.member.id === currentUserId && p.member.hourlyRate){
-        var value = document.createElement("span");
-        value.className = "report-member-value";
-        value.textContent = formatCurrencyBRL((p.total/3600) * p.member.hourlyRate);
-        head.appendChild(value);
-      }
-      var caret = document.createElement("span");
-      caret.className = "report-member-caret";
-      caret.textContent = "▾";
-      head.appendChild(caret);
-      head.addEventListener("click", function(){ row.classList.toggle("open"); });
-      row.appendChild(head);
-
-      var tasksBox = document.createElement("div");
-      tasksBox.className = "report-member-tasks";
-      if(!p.tasks.length){
-        var noTasks = document.createElement("div");
-        noTasks.className = "report-empty-tasks";
-        noTasks.textContent = "Nenhum tempo registrado ainda.";
-        tasksBox.appendChild(noTasks);
-      } else {
-        p.tasks.forEach(function(x){
-          var tr = document.createElement("div");
-          tr.className = "report-task-row";
-          var tn = document.createElement("span");
-          tn.className = "task-name";
-          tn.textContent = x.task.title;
-          var th = document.createElement("span");
-          th.className = "task-hours";
-          th.textContent = formatDuration(x.secs);
-          tr.appendChild(tn);
-          tr.appendChild(th);
-          tasksBox.appendChild(tr);
-        });
-      }
-      row.appendChild(tasksBox);
-      list.appendChild(row);
+    summary.innerHTML = "";
+    Object.keys(perMember).sort(function(a,b){ return perMember[b]-perMember[a]; }).forEach(function(id){
+      var chip = document.createElement("span");
+      chip.className = "report-summary-chip";
+      var m = memberById(id);
+      chip.appendChild(document.createTextNode(m ? m.name.split(" ")[0] : "(ex-integrante)"));
+      var b = document.createElement("b");
+      b.textContent = fmtHM(perMember[id]);
+      chip.appendChild(b);
+      summary.appendChild(chip);
     });
   }
 
-  document.getElementById("btnOpenReport").addEventListener("click", function(){
-    renderReport();
+  function buildReportRowEl(r){
+    var row = document.createElement("div");
+    row.className = "report-row";
+
+    var memberSel = document.createElement("select");
+    memberSel.className = "col-member";
+    var ids = state.team.map(function(m){ return m.id; });
+    state.team.forEach(function(m){
+      var o = document.createElement("option");
+      o.value = m.id; o.textContent = m.name;
+      memberSel.appendChild(o);
+    });
+    if(ids.indexOf(r.memberId) === -1){
+      var ex = document.createElement("option");
+      ex.value = r.memberId || ""; ex.textContent = "(ex-integrante)";
+      memberSel.appendChild(ex);
+    }
+    memberSel.value = r.memberId || "";
+    memberSel.addEventListener("change", function(){ r.memberId = memberSel.value; report.dirty = true; renderReportSummary(); });
+
+    var taskIn = document.createElement("input");
+    taskIn.type = "text"; taskIn.className = "col-task"; taskIn.value = r.task; taskIn.placeholder = "Tarefa";
+    taskIn.addEventListener("input", function(){ r.task = taskIn.value; report.dirty = true; });
+
+    var dateIn = document.createElement("input");
+    dateIn.type = "date"; dateIn.value = r.date;
+    dateIn.addEventListener("change", function(){ r.date = dateIn.value; report.dirty = true; });
+
+    var hoursCell = document.createElement("div");
+    hoursCell.className = "report-hours-cell";
+    var mins = Math.round(r.seconds/60);
+    var hIn = document.createElement("input");
+    hIn.type = "number"; hIn.min = "0"; hIn.step = "1"; hIn.value = Math.floor(mins/60);
+    var mIn = document.createElement("input");
+    mIn.type = "number"; mIn.min = "0"; mIn.max = "59"; mIn.step = "1"; mIn.value = mins % 60;
+    function applyHours(){
+      var h = parseInt(hIn.value,10); if(isNaN(h) || h<0) h = 0;
+      var m = parseInt(mIn.value,10); if(isNaN(m) || m<0) m = 0; if(m>59) m = 59;
+      r.seconds = h*3600 + m*60;
+      report.dirty = true;
+      renderReportSummary();
+    }
+    hIn.addEventListener("input", applyHours);
+    mIn.addEventListener("input", applyHours);
+    hIn.addEventListener("blur", function(){ var h = parseInt(hIn.value,10); hIn.value = (isNaN(h)||h<0) ? 0 : h; });
+    mIn.addEventListener("blur", function(){ var m = parseInt(mIn.value,10); mIn.value = (isNaN(m)||m<0) ? 0 : Math.min(59,m); });
+    var hs = document.createElement("span"); hs.textContent = "h";
+    var ms = document.createElement("span"); ms.textContent = "min";
+    hoursCell.appendChild(hIn); hoursCell.appendChild(hs); hoursCell.appendChild(mIn); hoursCell.appendChild(ms);
+
+    var rm = document.createElement("button");
+    rm.type = "button"; rm.className = "report-row-remove"; rm.title = "Apagar linha"; rm.textContent = "×";
+    rm.addEventListener("click", function(){
+      report.rows = report.rows.filter(function(x){ return x.id !== r.id; });
+      report.dirty = true;
+      row.remove();
+      renderReportSummary();
+      if(!report.rows.length) renderReportRows();
+    });
+
+    row.appendChild(memberSel); row.appendChild(taskIn); row.appendChild(dateIn); row.appendChild(hoursCell); row.appendChild(rm);
+    return row;
+  }
+
+  function renderReportRows(){
+    var box = document.getElementById("reportRows");
+    box.innerHTML = "";
+    if(!report.rows.length){
+      var empty = document.createElement("div");
+      empty.className = "report-empty";
+      empty.textContent = "Nenhuma hora registrada neste período. Você pode adicionar linhas na mão.";
+      box.appendChild(empty);
+    } else {
+      report.rows.forEach(function(r){ box.appendChild(buildReportRowEl(r)); });
+    }
+    renderReportSummary();
+  }
+
+  function csvCell(v){
+    v = String(v == null ? "" : v);
+    return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+  function reportPeriodLabel(){
+    var from = document.getElementById("reportFrom").value;
+    var to = document.getElementById("reportTo").value;
+    if(!from && !to) return "Todo o período";
+    return (from ? fmtBR(from) : "início") + " a " + (to ? fmtBR(to) : "hoje");
+  }
+  function reportFileSuffix(){
+    var from = document.getElementById("reportFrom").value;
+    var to = document.getElementById("reportTo").value;
+    return (!from && !to) ? "todo-periodo" : ((from||"inicio") + "_a_" + (to||localISO(new Date())));
+  }
+  function reportMemberLabel(){
+    var sel = document.getElementById("reportMemberSelect");
+    return sel.value ? sel.options[sel.selectedIndex].textContent : "Toda a equipe";
+  }
+  function reportRowsSorted(){
+    return report.rows.slice().filter(function(r){ return r.seconds > 0 || r.task; }).sort(function(a,b){
+      return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    });
+  }
+
+  function downloadReportCSV(){
+    var me = memberById(currentUserId);
+    var rate = me && me.hourlyRate ? me.hourlyRate : 0;
+    var rows = reportRowsSorted();
+    var sep = ";";
+    function line(arr){ return arr.map(csvCell).join(sep); }
+    function dec(secs){ return (secs/3600).toFixed(2).replace(".", ","); }
+    function hm(secs){ var mins = Math.round(secs/60); var m = mins%60; return Math.floor(mins/60) + ":" + (m<10?"0":"") + m; }
+    function money(v){ return v.toFixed(2).replace(".", ","); }
+    var lines = [];
+    lines.push(line(["Relatório de horas - " + (state.name || "Workmana")]));
+    lines.push(line(["Período", reportPeriodLabel()]));
+    lines.push(line(["Pessoa", reportMemberLabel()]));
+    lines.push(line(["Gerado em", fmtBR(localISO(new Date()))]));
+    lines.push("");
+    lines.push(line(["Data","Pessoa","Tarefa","Horas (h:mm)","Horas (decimal)","Valor (R$)"]));
+    var total = 0, perMember = {}, myValue = 0;
+    rows.forEach(function(r){
+      var m = memberById(r.memberId);
+      var name = m ? m.name : "(ex-integrante)";
+      var value = "";
+      if(rate && r.memberId === currentUserId){ var v = (r.seconds/3600) * rate; value = money(v); myValue += v; }
+      total += r.seconds;
+      perMember[name] = (perMember[name]||0) + r.seconds;
+      lines.push(line([fmtBR(r.date), name, r.task, hm(r.seconds), dec(r.seconds), value]));
+    });
+    lines.push("");
+    lines.push(line(["Total por pessoa"]));
+    Object.keys(perMember).sort().forEach(function(n){
+      lines.push(line(["", n, "", hm(perMember[n]), dec(perMember[n]), ""]));
+    });
+    lines.push(line(["", "TOTAL GERAL", "", hm(total), dec(total), rate ? money(myValue) : ""]));
+    var blob = new Blob(["﻿" + lines.join("\r\n")], {type:"text/csv;charset=utf-8;"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "workmana-horas_" + reportFileSuffix() + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+  }
+
+  function printReport(){
+    document.getElementById("reportPrintHeader").textContent =
+      (state.name || "Workmana") + " · " + reportMemberLabel() + " · " + reportPeriodLabel();
+    // linhas ordenadas por data pra impressão
+    report.rows = reportRowsSorted();
+    renderReportRows();
+    document.body.classList.add("printing-report");
+    var done = function(){
+      document.body.classList.remove("printing-report");
+      window.removeEventListener("afterprint", done);
+    };
+    window.addEventListener("afterprint", done);
+    window.print();
+  }
+
+  function openReport(){
+    fillReportMemberSelect();
+    var sel = document.getElementById("reportPeriodSelect");
+    sel.value = "month";
+    var rg = periodRange("month");
+    document.getElementById("reportFrom").value = rg.from;
+    document.getElementById("reportTo").value = rg.to;
+    document.getElementById("reportMemberSelect").value = "";
+    rebuildReport();
     reportOverlay.classList.add("open");
+  }
+
+  function confirmDiscardReportEdits(){
+    return !report.dirty || confirm("Isso refaz o relatório a partir das tarefas e descarta as edições que você fez. Continuar?");
+  }
+  function revertReportFilters(){
+    document.getElementById("reportPeriodSelect").value = report.last.period;
+    document.getElementById("reportFrom").value = report.last.from;
+    document.getElementById("reportTo").value = report.last.to;
+    document.getElementById("reportMemberSelect").value = report.last.member;
+  }
+
+  document.getElementById("reportPeriodSelect").addEventListener("change", function(){
+    var rg = periodRange(this.value);
+    if(rg){
+      document.getElementById("reportFrom").value = rg.from;
+      document.getElementById("reportTo").value = rg.to;
+    }
+    if(!confirmDiscardReportEdits()){ revertReportFilters(); return; }
+    rebuildReport();
   });
-  document.getElementById("btnCloseReport").addEventListener("click", function(){ reportOverlay.classList.remove("open"); });
-  reportOverlay.addEventListener("click", function(e){ if(e.target===reportOverlay) reportOverlay.classList.remove("open"); });
+  ["reportFrom","reportTo"].forEach(function(id){
+    document.getElementById(id).addEventListener("change", function(){
+      document.getElementById("reportPeriodSelect").value = "custom";
+      if(!confirmDiscardReportEdits()){ revertReportFilters(); return; }
+      rebuildReport();
+    });
+  });
+  document.getElementById("reportMemberSelect").addEventListener("change", function(){
+    if(!confirmDiscardReportEdits()){ revertReportFilters(); return; }
+    rebuildReport();
+  });
+  document.getElementById("btnReportReset").addEventListener("click", function(){
+    if(!confirmDiscardReportEdits()) return;
+    rebuildReport();
+  });
+  document.getElementById("btnReportAddRow").addEventListener("click", function(){
+    var from = document.getElementById("reportFrom").value;
+    var to = document.getElementById("reportTo").value;
+    var date = localISO(new Date());
+    if(to && date > to) date = to;
+    if(from && date < from) date = from;
+    var memberSel = document.getElementById("reportMemberSelect").value;
+    var r = {id:uid(), memberId: memberSel || currentUserId, task:"", date:date, seconds:0};
+    report.rows.push(r);
+    report.dirty = true;
+    var box = document.getElementById("reportRows");
+    var emptyMsg = box.querySelector(".report-empty");
+    if(emptyMsg) emptyMsg.remove();
+    var el = buildReportRowEl(r);
+    box.appendChild(el);
+    box.scrollTop = box.scrollHeight;
+    el.querySelector(".col-task").focus();
+    renderReportSummary();
+  });
+  document.getElementById("btnReportCSV").addEventListener("click", downloadReportCSV);
+  document.getElementById("btnReportPrint").addEventListener("click", printReport);
+
+  document.getElementById("btnOpenReport").addEventListener("click", openReport);
+  function closeReport(){
+    if(report.dirty && !confirm("Você tem edições no relatório que ainda não foram baixadas. Fechar mesmo assim?")) return;
+    report.dirty = false;
+    reportOverlay.classList.remove("open");
+  }
+  document.getElementById("btnCloseReport").addEventListener("click", closeReport);
+  reportOverlay.addEventListener("click", function(e){ if(e.target===reportOverlay) closeReport(); });
   document.getElementById("newMemberName").addEventListener("keydown", function(e){
     if(e.key === "Enter"){ document.getElementById("btnAddMember").click(); }
   });
