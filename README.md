@@ -14,8 +14,6 @@ App de gestão de tarefas da Alltoral — Kanban + Timeline, com múltiplas equi
 ├── apple-touch-icon.png     ← ícone usado no iOS ao "Adicionar à Tela de Início"
 ├── icon-192.png / icon-512.png
 ├── icon-192-maskable.png / icon-512-maskable.png   ← versões com margem de segurança para Android
-├── larot-avatar.png          ← personagem do Larot (mic acordado)
-├── larot-avatar-muted.png    ← personagem do Larot (mic parado/erro)
 └── README.md                ← este guia
 ```
 
@@ -103,7 +101,9 @@ Além de título, descrição, prioridade, responsável e prazo, cada tarefa tem
 
 - **Checklist** — sub-tarefas com caixinha de marcar, texto editável (clique pra editar) e barra de progresso. Salva na hora, sem precisar clicar em "Salvar tarefa". Aparece como badge "☑ 3/5" no card do Kanban.
 - **Participantes** — além do responsável principal, dá pra marcar outros integrantes que estão ajudando naquela tarefa (chips de seleção múltipla). Quem é participante também vê a tarefa ao filtrar pelo próprio nome/avatar, não só quem é responsável.
-- **Calculadora de horas** — só visível pra quem é o responsável da tarefa. Mostra o tempo já registrado (pelo cronômetro da florzinha 🌸) e, com base num "valor da sua hora" que cada pessoa configura uma vez (fica salvo no perfil, não por tarefa), calcula quanto aquele tempo já rendeu. É privado — só o próprio responsável vê o valor da hora e o total.
+- **Calculadora de horas** — só visível pra quem é o responsável da tarefa. Mostra o tempo já registrado (pelo cronômetro da florzinha 🌸, ou ajustado na mão nos campos de horas e minutos) e, com base num "valor da sua hora" que cada pessoa configura uma vez (fica salvo no perfil, não por tarefa), calcula quanto aquele tempo já rendeu. É privado — só o próprio responsável vê o valor da hora e o total.
+- **Relatório de horas** — botão "Relatório ⏱" no topo. Escolha o período (este mês, mês passado, últimos 7/30 dias, hoje, todo o período ou datas personalizadas) e, se quiser, uma pessoa específica. As horas aparecem em linhas (pessoa, tarefa, data, horas) que dá pra **editar, apagar e adicionar** antes de baixar, pra conferir se está tudo certo. As edições valem só para o relatório e não alteram as tarefas. Dá pra baixar em **CSV** (abre no Excel/Google Planilhas, com total por pessoa e total geral) ou **Imprimir / PDF**. O valor em R$ só aparece nas linhas da própria pessoa logada, usando o valor da hora dela.
+  - O relatório por período depende do registro de tempo por data (`timeLog` em cada tarefa), que é gravado a cada vez que o cronômetro é pausado ou o tempo é ajustado. O tempo acumulado antes dessa atualização entra como uma única entrada datada pela criação da tarefa; se precisar, corrija a data direto no relatório.
 - **Cronômetro (a florzinha)** — botão "▶ Estou nessa" / "⏸ Pausar tempo", visível só pra quem é o responsável. Enquanto ativo, uma flor gira no card e o tempo conta em tempo real, visível pra toda a equipe.
 - **Chat / recados** — dúvidas ou avisos por tarefa, sincronizados em tempo real. Cada pessoa pode editar ou apagar as próprias mensagens (aparece "· editado" quando uma mensagem foi alterada).
 - **Anexos** — arquivos anexados à tarefa (veja a seção própria abaixo), com miniatura clicável pra imagens.
@@ -132,32 +132,6 @@ Um contador "📎 N" aparece no card do Kanban quando a tarefa tem anexos, do la
 **Por que o limite de 700KB?** Os arquivos ficam salvos direto no Firestore (convertidos pra texto), sem usar o Firebase Storage — assim o app roda inteiro no plano gratuito do Firebase, sem precisar de cartão de crédito nem do plano pago Blaze (que a Google passou a exigir pro Storage a partir de outubro de 2024). O Firestore tem um limite de 1MB por "documento"; 700KB fica com boa margem de segurança dentro disso.
 
 **Fotos são comprimidas automaticamente** antes de salvar (redimensionadas e convertidas pra JPEG direto no navegador da pessoa, sem precisar de internet pra isso) — então uma foto de celular de vários MB normalmente entra sem problema. Isso vale só pra imagens; outros tipos de arquivo (PDF, planilha, etc.) precisam já vir dentro do limite de 700KB. A mesma compressão automática é usada nas fotos de perfil.
-
-## Larot (assistente de voz)
-
-O personagem no canto inferior direito é o **Larot** — toca nele uma vez pra começar a falar, e toca de novo quando terminar (ele também para sozinho depois de um tempinho de silêncio). O que você fala aparece na tela em tempo real, e a resposta some em alguns segundos.
-
-- **100% local e gratuito** — não usa nenhuma IA nem API paga. É tudo reconhecimento de padrões em JavaScript, rodando direto no navegador (Web Speech API), sem custo nenhum por comando.
-- Funciona melhor no **Chrome** (Android e desktop). No iPhone/Safari o reconhecimento de voz nativo do navegador é mais limitado.
-- **Sem resposta falada** — o Larot só mostra o texto na tela (pra você poder emendar vários comandos rápido, sem esperar ele "terminar de falar"), exceto na consulta de tarefas atrasadas, que ele fala em voz alta.
-
-**Estados do personagem**: dorminhoco (parado), acordado e sorrindo (ouvindo), dorminhoco em cinza (erro ou sem permissão de microfone).
-
-**Comandos que ele entende:**
-
-- **Criar tarefa** — "Larot, criar tarefa editar vídeo, pra amanhã, prioridade alta, responsável Ana". Título, prazo, prioridade e responsável são todos opcionais além do título.
-- **Mudar status** — "Larot, mover editar vídeo pra em andamento" (ou "concluído", "em revisão", "a fazer").
-- **Mudar prioridade** — "Larot, prioridade alta na tarefa editar vídeo".
-- **Mudar prazo** — "Larot, mudar prazo da tarefa editar vídeo pra sexta-feira" (aceita "amanhã", "dia 18", "18 de setembro", datas numéricas etc.).
-- **Mudar descrição** — "Larot, mudar descrição de editar vídeo pra revisar com o cliente antes".
-- **Trocar responsável** — "Larot, atribuir editar vídeo pro Lucas".
-- **Play/pausa no cronômetro** — "Larot, dar play na tarefa editar vídeo" / "pausar".
-- **Excluir tarefa** — "Larot, excluir editar vídeo". Por segurança, a exclusão **não é confirmada por voz**: aparece um balão com botões ✓ (confirmar) e ✗ (cancelar) pra você tocar.
-- **Tarefas atrasadas** — "Larot, tem tarefa atrasada?" — essa é a única resposta que ele fala em voz alta.
-
-Tarefas já concluídas são ignoradas nos comandos de prioridade e responsável (não faz sentido mudar isso numa tarefa que já acabou). Participantes e itens de checklist não têm comando de voz (só pela interface mesmo).
-
-Tem um botão 🐞 no canto inferior esquerdo (só aparece logado) que abre um painel de depuração — mostra em tempo real o que o Larot está ouvindo e processando, útil se algum comando não funcionar como esperado no celular.
 
 ## Limitações a saber
 
