@@ -14,6 +14,8 @@ App de gestão de tarefas da Alltoral — Kanban + Timeline, com múltiplas equi
 ├── apple-touch-icon.png     ← ícone usado no iOS ao "Adicionar à Tela de Início"
 ├── icon-192.png / icon-512.png
 ├── icon-192-maskable.png / icon-512-maskable.png   ← versões com margem de segurança para Android
+├── larot-avatar.png          ← personagem do Larot (mic acordado)
+├── larot-avatar-muted.png    ← personagem do Larot (mic parado/erro)
 └── README.md                ← este guia
 ```
 
@@ -132,6 +134,32 @@ Um contador "📎 N" aparece no card do Kanban quando a tarefa tem anexos, do la
 **Por que o limite de 700KB?** Os arquivos ficam salvos direto no Firestore (convertidos pra texto), sem usar o Firebase Storage — assim o app roda inteiro no plano gratuito do Firebase, sem precisar de cartão de crédito nem do plano pago Blaze (que a Google passou a exigir pro Storage a partir de outubro de 2024). O Firestore tem um limite de 1MB por "documento"; 700KB fica com boa margem de segurança dentro disso.
 
 **Fotos são comprimidas automaticamente** antes de salvar (redimensionadas e convertidas pra JPEG direto no navegador da pessoa, sem precisar de internet pra isso) — então uma foto de celular de vários MB normalmente entra sem problema. Isso vale só pra imagens; outros tipos de arquivo (PDF, planilha, etc.) precisam já vir dentro do limite de 700KB. A mesma compressão automática é usada nas fotos de perfil.
+
+## Larot (assistente de voz)
+
+O personagem no canto inferior direito é o **Larot** — toca nele uma vez pra começar a falar, e toca de novo quando terminar (ele também para sozinho depois de um tempinho de silêncio). O que você fala aparece na tela em tempo real, e a resposta some em alguns segundos.
+
+- **100% local e gratuito** — não usa nenhuma IA nem API paga. É tudo reconhecimento de padrões em JavaScript, rodando direto no navegador (Web Speech API), sem custo nenhum por comando.
+- Funciona melhor no **Chrome** (Android e desktop). No iPhone/Safari o reconhecimento de voz nativo do navegador é mais limitado.
+- **Sem resposta falada** — o Larot só mostra o texto na tela (pra você poder emendar vários comandos rápido, sem esperar ele "terminar de falar"), exceto na consulta de tarefas atrasadas, que ele fala em voz alta.
+
+**Estados do personagem**: dorminhoco (parado), acordado e sorrindo (ouvindo), dorminhoco em cinza (erro ou sem permissão de microfone).
+
+**Comandos que ele entende:**
+
+- **Criar tarefa** — "Larot, criar tarefa editar vídeo, pra amanhã, prioridade alta, responsável Ana". Título, prazo, prioridade e responsável são todos opcionais além do título.
+- **Mudar status** — "Larot, mover editar vídeo pra em andamento" (ou "concluído", "em revisão", "a fazer").
+- **Mudar prioridade** — "Larot, prioridade alta na tarefa editar vídeo".
+- **Mudar prazo** — "Larot, mudar prazo da tarefa editar vídeo pra sexta-feira" (aceita "amanhã", "dia 18", "18 de setembro", datas numéricas etc.).
+- **Mudar descrição** — "Larot, mudar descrição de editar vídeo pra revisar com o cliente antes".
+- **Trocar responsável** — "Larot, atribuir editar vídeo pro Lucas".
+- **Play/pausa no cronômetro** — "Larot, dar play na tarefa editar vídeo" / "pausar".
+- **Excluir tarefa** — "Larot, excluir editar vídeo". Por segurança, a exclusão **não é confirmada por voz**: aparece um balão com botões ✓ (confirmar) e ✗ (cancelar) pra você tocar.
+- **Tarefas atrasadas** — "Larot, tem tarefa atrasada?" — essa é a única resposta que ele fala em voz alta.
+
+Tarefas já concluídas são ignoradas nos comandos de prioridade e responsável (não faz sentido mudar isso numa tarefa que já acabou). Participantes e itens de checklist não têm comando de voz (só pela interface mesmo).
+
+Tem um botão 🐞 no canto inferior esquerdo (só aparece logado) que abre um painel de depuração — mostra em tempo real o que o Larot está ouvindo e processando, útil se algum comando não funcionar como esperado no celular.
 
 ## Limitações a saber
 
