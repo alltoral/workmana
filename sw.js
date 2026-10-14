@@ -4,7 +4,7 @@
 // new deploy shows up right away instead of needing a manual cache clear.
 // Firestore data still needs an internet connection to sync.
 
-var CACHE_NAME = "workmana-shell-v4";
+var CACHE_NAME = "workmana-shell-v25";
 var APP_SHELL = [
   "./",
   "./index.html",
@@ -12,7 +12,9 @@ var APP_SHELL = [
   "./icon-192.png",
   "./icon-512.png",
   "./apple-touch-icon.png",
-  "./favicon.ico"
+  "./favicon.ico",
+  "./larot-avatar.png",
+  "./larot-avatar-muted.png"
 ];
 
 self.addEventListener("install", function(event){
