@@ -110,6 +110,19 @@ Além de título, descrição, prioridade, responsável e prazo, cada tarefa tem
 - **Chat / recados** — dúvidas ou avisos por tarefa, sincronizados em tempo real. Cada pessoa pode editar ou apagar as próprias mensagens (aparece "· editado" quando uma mensagem foi alterada).
 - **Anexos** — arquivos anexados à tarefa (veja a seção própria abaixo), com miniatura clicável pra imagens.
 
+## Tarefas fixas (rotina)
+
+Faixa "Tarefas fixas" logo acima do Kanban, pra o que se repete (olhar e-mails, responder clientes, etc.) e não faz sentido virar um card que "conclui".
+
+- **Criar:** botão "+ Nova fixa". Escolha o nome e os dias da semana em que ela vale (todos os dias, segunda a sexta ou dias soltos). O(a) líder e quem tem "Move tudo" também escolhem o responsável.
+- **Marcar como feita hoje:** a bolinha à esquerda. A marca vale só pro dia e zera sozinha no dia seguinte. O contador no topo mostra "2/4 feitas hoje".
+- **Tempo:** botão "Começar / Pausar" com a florzinha girando, igual às tarefas. Cada fixa mostra o tempo de **hoje** e da **semana** (segunda a domingo). Só um cronômetro roda por vez: começar uma fixa pausa a tarefa ou a outra fixa em andamento, e o contrário também.
+- **Corrigir o tempo de hoje:** no ✎ de editar, campo de horas e minutos (útil se esqueceu de pausar ou de iniciar).
+- **Minhas / Equipe:** por padrão aparecem só as suas; "Equipe" mostra as de todo mundo (só o responsável marca e cronometra).
+- **Relatório de horas:** as fixas entram no relatório com o prefixo 🔁, por dia, junto com as tarefas normais.
+- A faixa pode ser recolhida na setinha (o app lembra a escolha naquele aparelho).
+- Ficam salvas no mesmo documento da equipe, no campo `routines`, com um registro de tempo por dia pra manter o documento pequeno.
+
 ## Kanban e Timeline
 
 - **Kanban**: 4 colunas (A fazer, Em andamento, Em revisão, Concluído). Tarefas atrasadas (prazo vencido, ainda não concluídas) ficam com o card amarelo. Tarefas concluídas viram uma barrinha preta e estreita, mostrando só o nome e a data de conclusão — e **somem sozinhas da visualização 24h depois de concluídas** (arquivadas, não apagadas: reaparecem se você buscar pelo nome na busca do app).
