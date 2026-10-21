@@ -242,6 +242,70 @@
 
   main{position:relative; z-index:1; padding:0 28px 60px;}
 
+  /* ---------- tarefas fixas (rotina) ---------- */
+  .routines{
+    position:relative; z-index:1; margin:0 28px 18px; padding:14px 16px;
+    background:var(--bg-elev); border:1px solid var(--border); border-radius:20px;
+  }
+  .routines-head{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .routines-title{
+    font-family:var(--font-condensed); font-weight:700; letter-spacing:2px; font-size:12px;
+    text-transform:uppercase; color:var(--white); display:flex; align-items:center; gap:7px;
+  }
+  .routines-progress{font-size:12px; color:var(--gray); font-family:var(--font-condensed); letter-spacing:0.5px;}
+  .routines-scope{display:flex; gap:3px; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:3px;}
+  .routines-scope button{
+    border:none; background:transparent; color:var(--gray); cursor:pointer; border-radius:999px;
+    font-family:var(--font-condensed); font-weight:600; letter-spacing:1px; font-size:11px; text-transform:uppercase; padding:4px 11px;
+  }
+  .routines-scope button.active{background:var(--black); color:var(--white);}
+  .routines-add{
+    border:1px solid var(--border); background:var(--bg); color:var(--white); border-radius:999px; cursor:pointer;
+    font-family:var(--font-condensed); font-weight:700; letter-spacing:1px; font-size:11.5px; text-transform:uppercase; padding:6px 13px;
+  }
+  .routines-add:hover{background:var(--black); border-color:var(--black);}
+  .routines-toggle{
+    border:none; background:transparent; color:var(--gray); cursor:pointer; padding:4px 6px; display:flex; align-items:center;
+  }
+  .routines-toggle svg{transition:transform .18s ease;}
+  .routines.collapsed .routines-toggle svg{transform:rotate(-90deg);}
+  .routines.collapsed .routines-body{display:none;}
+  .routines-body{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:10px; margin-top:12px;
+  }
+  .routines-empty{grid-column:1 / -1; text-align:center; padding:14px; color:var(--gray-dim); font-size:12.5px;}
+  .routine-card{
+    position:relative; background:var(--bg-elev-2); border:1px solid var(--border); border-radius:10px; padding:11px 12px;
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .routine-card.off-today{opacity:0.55;}
+  .routine-top{display:flex; align-items:flex-start; gap:9px;}
+  .routine-check{
+    width:20px; height:20px; border-radius:50%; border:2px solid var(--gray); background:transparent; cursor:pointer;
+    flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; color:transparent; font-size:12px; line-height:1; padding:0;
+  }
+  .routine-check.done{background:var(--yellow); border-color:var(--yellow); color:var(--black);}
+  .routine-check:disabled{cursor:default; opacity:0.6;}
+  .routine-title{flex:1; min-width:0; font-size:13.5px; font-weight:600; color:#fff; word-break:break-word;}
+  .routine-card.done-today .routine-title{color:rgba(255,255,255,0.55); text-decoration:line-through;}
+  .routine-edit{
+    border:none; background:transparent; color:var(--gray-dim); cursor:pointer; font-size:13px; padding:0 2px; line-height:1;
+  }
+  .routine-edit:hover{color:#fff;}
+  .routine-meta{display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:11px; color:var(--gray); font-family:var(--font-condensed); letter-spacing:0.4px;}
+  .routine-meta .avatar{margin-left:0;}
+  .routine-times{display:flex; align-items:center; gap:6px; font-size:11.5px; color:rgba(255,255,255,0.88); font-family:var(--font-condensed); letter-spacing:0.5px;}
+  .routine-times b{font-weight:700; color:#fff;}
+  .routine-dayschips{display:flex; gap:6px; flex-wrap:wrap;}
+  .day-chip{
+    border:1px solid var(--border); background:var(--bg-elev-2); color:var(--gray); border-radius:999px; cursor:pointer;
+    font-family:var(--font-condensed); font-weight:600; letter-spacing:0.6px; font-size:12px; padding:6px 12px; text-transform:uppercase;
+  }
+  .day-chip.active{background:var(--black); border-color:var(--black); color:#fff;}
+  .routine-days-quick{display:flex; gap:10px; margin-top:8px;}
+  .routine-days-quick button{background:none; border:none; color:var(--yellow); cursor:pointer; text-decoration:underline; font-size:11.5px; font-family:var(--font-condensed); padding:0;}
+  @media (max-width:640px){ .routines{margin:0 16px 16px;} }
+
   /* ---------- kanban ---------- */
   .board{
     display:grid; grid-template-columns:repeat(4, minmax(260px, 1fr)); gap:16px;
@@ -1090,6 +1154,21 @@
   </div>
 </div>
 
+<section class="routines" id="routinesSection">
+  <div class="routines-head">
+    <span class="routines-title"><span class="flower" aria-hidden="true"><svg viewBox="0 0 24 24" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="#fae204"/><circle cx="12" cy="5" r="3.2" fill="currentColor"/><circle cx="12" cy="19" r="3.2" fill="currentColor"/><circle cx="5" cy="12" r="3.2" fill="currentColor"/><circle cx="19" cy="12" r="3.2" fill="currentColor"/></svg></span>Tarefas fixas</span>
+    <span class="routines-progress" id="routinesProgress"></span>
+    <div class="routines-scope" id="routinesScope">
+      <button type="button" data-scope="mine" class="active">Minhas</button>
+      <button type="button" data-scope="team">Equipe</button>
+    </div>
+    <div class="spacer"></div>
+    <button type="button" class="routines-add" id="btnNewRoutine">+ Nova fixa</button>
+    <button type="button" class="routines-toggle" id="btnToggleRoutines" aria-label="Mostrar ou ocultar tarefas fixas"><svg width="12" height="8" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 5.5L10 1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="routines-body" id="routinesBody"></div>
+</section>
+
 <main>
   <div id="kanbanView"></div>
   <div id="timelineView" style="display:none;"></div>
@@ -1248,6 +1327,43 @@
   </div>
 </div>
 
+<!-- Routine Modal -->
+<div class="overlay" id="routineOverlay">
+  <div class="modal">
+    <h2 id="routineModalTitle">Nova tarefa fixa</h2>
+    <div class="subtitle">Rotina que se repete, com tempo registrado por dia</div>
+    <div class="field">
+      <label for="routineTitle">Nome</label>
+      <input type="text" id="routineTitle" placeholder="Ex: Olhar e-mails">
+    </div>
+    <div class="field" id="routineAssigneeField" style="display:none;">
+      <label for="routineAssignee">Responsável</label>
+      <select id="routineAssignee"></select>
+    </div>
+    <div class="field">
+      <label>Dias da semana</label>
+      <div class="routine-dayschips" id="routineDayChips"></div>
+      <div class="routine-days-quick">
+        <button type="button" id="routineDaysAll">Todos os dias</button>
+        <button type="button" id="routineDaysWeek">Segunda a sexta</button>
+      </div>
+    </div>
+    <div class="field" id="routineTimeField" style="display:none;">
+      <label>Tempo registrado hoje</label>
+      <div class="calc-time-edit">
+        <input type="number" id="routineHoursInput" min="0" step="1" class="calc-time-input"><span class="calc-time-unit">h</span>
+        <input type="number" id="routineMinutesInput" min="0" max="59" step="1" class="calc-time-input"><span class="calc-time-unit">min</span>
+      </div>
+      <div class="calc-hint">Use pra corrigir o tempo de hoje se esqueceu de pausar ou de iniciar. O histórico completo aparece no Relatório.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnCancelRoutine">Cancelar</button>
+      <button class="btn-primary" id="btnSaveRoutine">Salvar</button>
+      <button class="btn-danger-text" id="btnDeleteRoutine" style="display:none;">Excluir</button>
+    </div>
+  </div>
+</div>
+
 <!-- Report Modal -->
 <div class="overlay" id="reportOverlay">
   <div class="modal report-modal">
@@ -1339,6 +1455,13 @@
       if(!("isAdmin" in m)) m.isAdmin = false;
       if(!("hourlyRate" in m)) m.hourlyRate = null;
     });
+    if(!Array.isArray(s.routines)) s.routines = [];
+    s.routines.forEach(function(r){
+      if(!Array.isArray(r.days) || !r.days.length) r.days = [0,1,2,3,4,5,6];
+      if(!Array.isArray(r.timeLog)) r.timeLog = [];
+      if(!Array.isArray(r.doneDates)) r.doneDates = [];
+      if(!("activeStartedAt" in r)) r.activeStartedAt = null;
+    });
     s.tasks.forEach(function(t){
       if(!("timeSpentSeconds" in t)) t.timeSpentSeconds = 0;
       if(!("activeStartedAt" in t)) t.activeStartedAt = null;
@@ -1410,7 +1533,7 @@
     });
   }
 
-  var state = { name:"", inviteCode:"", ownerId:null, team:[], tasks:[] };
+  var state = { name:"", inviteCode:"", ownerId:null, team:[], tasks:[], routines:[] };
   var ui = { view:"kanban", search:"", filterAssignee:null, filterToday:false, filterOverdue:false, filterPriority:null, filterDate:"", editingTaskId:null };
 
   var TEAM_SESSION_KEY = "workmana_team_id_v1";
@@ -1558,6 +1681,316 @@
     t.activeStartedAt = null;
   }
 
+  /* ---------- tarefas fixas (rotina) ---------- */
+  var DAY_SHORT = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+  var DAY_ORDER = [1,2,3,4,5,6,0];
+  var ROUTINES_COLLAPSED_KEY = "workmana_routines_collapsed_v1";
+  var routineScope = "mine";
+  var editingRoutineId = null;
+  var routineSelectedDays = [];
+  var routineInitialMins = 0;
+
+  function routineDaysLabel(days){
+    var set = days.slice().sort(function(a,b){ return a-b; }).join(",");
+    if(set === "0,1,2,3,4,5,6") return "Todos os dias";
+    if(set === "1,2,3,4,5") return "Seg a Sex";
+    if(set === "1,2,3,4") return "Seg a Qui";
+    return DAY_ORDER.filter(function(d){ return days.indexOf(d) !== -1; }).map(function(d){ return DAY_SHORT[d]; }).join(", ");
+  }
+  function routineScheduledToday(r){ return r.days.indexOf(new Date().getDay()) !== -1; }
+  function mondayOfWeekISO(){
+    var d = new Date();
+    var dow = (d.getDay()+6) % 7;
+    return localISO(new Date(d.getFullYear(), d.getMonth(), d.getDate()-dow));
+  }
+  // um registro por dia (mantém o documento pequeno mesmo usando todo dia)
+  function routineAddLog(r, seconds, dateISO){
+    seconds = Math.round(seconds*100)/100;
+    if(!(seconds > 0)) return;
+    for(var i=0;i<r.timeLog.length;i++){
+      if(r.timeLog[i].date === dateISO){
+        r.timeLog[i].seconds = Math.round((r.timeLog[i].seconds + seconds)*100)/100;
+        return;
+      }
+    }
+    r.timeLog.push({date:dateISO, seconds:seconds});
+  }
+  function routineLiveChunks(r){
+    return r.activeStartedAt ? splitByDay(new Date(r.activeStartedAt).getTime(), Date.now()) : [];
+  }
+  function routineSeconds(r, fromISO, toISO){
+    var total = 0;
+    function inRange(d){ return (!fromISO || d >= fromISO) && (!toISO || d <= toISO); }
+    r.timeLog.forEach(function(e){ if(inRange(e.date)) total += e.seconds; });
+    routineLiveChunks(r).forEach(function(c){ if(inRange(c.date)) total += c.seconds; });
+    return total;
+  }
+  function closeRoutineSession(r){
+    splitByDay(new Date(r.activeStartedAt).getTime(), Date.now()).forEach(function(c){
+      routineAddLog(r, c.seconds, c.date);
+    });
+    r.activeStartedAt = null;
+  }
+  function canEditRoutine(r){
+    var me = memberById(currentUserId);
+    return r.assigneeId === currentUserId || isTeamOwner() || !!(me && me.isAdmin);
+  }
+  function startRoutineTimer(id){
+    var r = state.routines.find(function(x){ return x.id === id; });
+    if(!r) return;
+    state.tasks.forEach(function(t){
+      if(t.activeStartedAt && t.assigneeId === currentUserId) closeSession(t);
+    });
+    state.routines.forEach(function(x){
+      if(x.activeStartedAt && x.assigneeId === currentUserId) closeRoutineSession(x);
+    });
+    r.activeStartedAt = new Date().toISOString();
+    saveState(state);
+    renderAll();
+  }
+  function stopRoutineTimer(id){
+    var r = state.routines.find(function(x){ return x.id === id; });
+    if(r && r.activeStartedAt){
+      closeRoutineSession(r);
+      saveState(state);
+      renderAll();
+    }
+  }
+  function toggleRoutineDone(id){
+    var r = state.routines.find(function(x){ return x.id === id; });
+    if(!r) return;
+    var today = localISO(new Date());
+    var i = r.doneDates.indexOf(today);
+    if(i === -1){ r.doneDates.push(today); if(r.doneDates.length > 90) r.doneDates = r.doneDates.slice(-90); }
+    else r.doneDates.splice(i, 1);
+    saveState(state);
+    renderAll();
+  }
+
+  function renderRoutines(){
+    var body = document.getElementById("routinesBody");
+    if(!body) return;
+    body.innerHTML = "";
+    var today = localISO(new Date());
+    var weekStart = mondayOfWeekISO();
+    var list = state.routines.filter(function(r){ return routineScope === "team" || r.assigneeId === currentUserId; });
+    list.sort(function(a,b){
+      if(routineScope === "team" && a.assigneeId !== b.assigneeId){
+        var an = (memberById(a.assigneeId)||{name:"~"}).name, bn = (memberById(b.assigneeId)||{name:"~"}).name;
+        return an < bn ? -1 : 1;
+      }
+      return a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
+    });
+
+    var scheduled = list.filter(routineScheduledToday);
+    var doneCount = scheduled.filter(function(r){ return r.doneDates.indexOf(today) !== -1; }).length;
+    document.getElementById("routinesProgress").textContent =
+      !list.length ? "" : (scheduled.length ? (doneCount + "/" + scheduled.length + " feitas hoje") : "nenhuma pra hoje");
+
+    Array.prototype.forEach.call(document.querySelectorAll("#routinesScope button"), function(b){
+      b.classList.toggle("active", b.dataset.scope === routineScope);
+    });
+
+    if(!list.length){
+      var empty = document.createElement("div");
+      empty.className = "routines-empty";
+      empty.textContent = routineScope === "team"
+        ? "Ninguém criou tarefas fixas ainda."
+        : "Nenhuma tarefa fixa ainda. Crie as suas rotinas, como \"Olhar e-mails\", pra acompanhar o tempo gasto nelas.";
+      body.appendChild(empty);
+      return;
+    }
+
+    list.forEach(function(r){
+      var mine = r.assigneeId === currentUserId;
+      var scheduledToday = routineScheduledToday(r);
+      var doneToday = r.doneDates.indexOf(today) !== -1;
+      var card = document.createElement("div");
+      card.className = "routine-card" + (scheduledToday ? "" : " off-today") + (doneToday ? " done-today" : "");
+
+      var top = document.createElement("div");
+      top.className = "routine-top";
+      var check = document.createElement("button");
+      check.type = "button";
+      check.className = "routine-check" + (doneToday ? " done" : "");
+      check.textContent = "✓";
+      check.title = mine ? (doneToday ? "Desmarcar hoje" : "Marcar como feita hoje") : "Só quem é responsável marca";
+      check.disabled = !mine;
+      check.addEventListener("click", function(){ toggleRoutineDone(r.id); });
+      top.appendChild(check);
+      var title = document.createElement("span");
+      title.className = "routine-title";
+      title.textContent = r.title;
+      top.appendChild(title);
+      if(canEditRoutine(r)){
+        var edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "routine-edit";
+        edit.title = "Editar";
+        edit.textContent = "✎";
+        edit.addEventListener("click", function(){ openRoutineModal(r.id); });
+        top.appendChild(edit);
+      }
+      card.appendChild(top);
+
+      var meta = document.createElement("div");
+      meta.className = "routine-meta";
+      if(routineScope === "team"){
+        var m = memberById(r.assigneeId);
+        meta.appendChild(avatarEl(m, 18));
+        meta.appendChild(document.createTextNode(m ? m.name.split(" ")[0] : "(ex-integrante)"));
+        meta.appendChild(document.createTextNode("·"));
+      }
+      meta.appendChild(document.createTextNode(routineDaysLabel(r.days) + (scheduledToday ? "" : " · não é hoje")));
+      card.appendChild(meta);
+
+      var times = document.createElement("div");
+      times.className = "routine-times";
+      times.appendChild(flowerIcon(!!r.activeStartedAt));
+      var t1 = document.createElement("span");
+      t1.innerHTML = "Hoje <b></b> · Semana <b></b>";
+      t1.querySelectorAll("b")[0].textContent = formatDuration(routineSeconds(r, today, today));
+      t1.querySelectorAll("b")[1].textContent = formatDuration(routineSeconds(r, weekStart, today));
+      times.appendChild(t1);
+      card.appendChild(times);
+
+      if(mine){
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "timer-btn" + (r.activeStartedAt ? " active" : "");
+        btn.textContent = r.activeStartedAt ? "⏸ Pausar tempo" : "▶ Começar";
+        btn.addEventListener("click", function(){
+          if(r.activeStartedAt) stopRoutineTimer(r.id); else startRoutineTimer(r.id);
+        });
+        card.appendChild(btn);
+      }
+      body.appendChild(card);
+    });
+  }
+
+  /* modal de tarefa fixa */
+  var routineOverlay = document.getElementById("routineOverlay");
+  function renderRoutineDayChips(){
+    var box = document.getElementById("routineDayChips");
+    box.innerHTML = "";
+    DAY_ORDER.forEach(function(d){
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "day-chip" + (routineSelectedDays.indexOf(d) !== -1 ? " active" : "");
+      chip.textContent = DAY_SHORT[d];
+      chip.addEventListener("click", function(){
+        var i = routineSelectedDays.indexOf(d);
+        if(i === -1) routineSelectedDays.push(d); else routineSelectedDays.splice(i, 1);
+        renderRoutineDayChips();
+      });
+      box.appendChild(chip);
+    });
+  }
+  function openRoutineModal(id){
+    editingRoutineId = id || null;
+    var r = id ? state.routines.find(function(x){ return x.id === id; }) : null;
+    document.getElementById("routineModalTitle").textContent = r ? "Editar tarefa fixa" : "Nova tarefa fixa";
+    document.getElementById("routineTitle").value = r ? r.title : "";
+    routineSelectedDays = r ? r.days.slice() : [0,1,2,3,4,5,6];
+    renderRoutineDayChips();
+
+    var me = memberById(currentUserId);
+    var canAssign = isTeamOwner() || !!(me && me.isAdmin);
+    var assigneeField = document.getElementById("routineAssigneeField");
+    assigneeField.style.display = canAssign ? "" : "none";
+    var sel = document.getElementById("routineAssignee");
+    sel.innerHTML = "";
+    state.team.forEach(function(m){
+      var o = document.createElement("option");
+      o.value = m.id; o.textContent = m.name;
+      sel.appendChild(o);
+    });
+    sel.value = r ? (r.assigneeId || currentUserId) : currentUserId;
+
+    var timeField = document.getElementById("routineTimeField");
+    if(r && r.assigneeId === currentUserId){
+      var today = localISO(new Date());
+      routineInitialMins = Math.round(routineSeconds(r, today, today) / 60);
+      document.getElementById("routineHoursInput").value = Math.floor(routineInitialMins/60);
+      document.getElementById("routineMinutesInput").value = routineInitialMins % 60;
+      timeField.style.display = "";
+    } else {
+      timeField.style.display = "none";
+    }
+    document.getElementById("btnDeleteRoutine").style.display = r ? "" : "none";
+    routineOverlay.classList.add("open");
+    setTimeout(function(){ document.getElementById("routineTitle").focus(); }, 50);
+  }
+  function closeRoutineModal(){ routineOverlay.classList.remove("open"); editingRoutineId = null; }
+
+  function saveRoutine(){
+    var titleEl = document.getElementById("routineTitle");
+    var title = titleEl.value.trim();
+    if(!title){ titleEl.focus(); return; }
+    if(!routineSelectedDays.length){ routineSelectedDays = [0,1,2,3,4,5,6]; }
+    var me = memberById(currentUserId);
+    var canAssign = isTeamOwner() || !!(me && me.isAdmin);
+    var r = editingRoutineId ? state.routines.find(function(x){ return x.id === editingRoutineId; }) : null;
+    if(!r){
+      r = {id:uid(), title:title, assigneeId:currentUserId, days:routineSelectedDays.slice(), timeLog:[], doneDates:[], activeStartedAt:null, createdAt:localISO(new Date())};
+      if(canAssign) r.assigneeId = document.getElementById("routineAssignee").value || currentUserId;
+      state.routines.push(r);
+    } else {
+      r.title = title;
+      r.days = routineSelectedDays.slice();
+      if(canAssign) r.assigneeId = document.getElementById("routineAssignee").value || r.assigneeId;
+      if(document.getElementById("routineTimeField").style.display !== "none"){
+        var h = parseInt(document.getElementById("routineHoursInput").value, 10); if(isNaN(h) || h < 0) h = 0;
+        var m = parseInt(document.getElementById("routineMinutesInput").value, 10); if(isNaN(m) || m < 0) m = 0; if(m > 59) m = 59;
+        var newMins = h*60 + m;
+        if(newMins !== routineInitialMins){
+          var wasActive = !!r.activeStartedAt;
+          if(wasActive) closeRoutineSession(r);
+          var today = localISO(new Date());
+          var cur = routineSeconds(r, today, today);
+          var delta = newMins*60 - cur;
+          if(delta > 0) routineAddLog(r, delta, today);
+          else if(delta < 0){
+            r.timeLog.forEach(function(e){ if(e.date === today) e.seconds = Math.max(0, Math.round((e.seconds + delta)*100)/100); });
+            r.timeLog = r.timeLog.filter(function(e){ return e.seconds > 0.005; });
+          }
+          if(wasActive) r.activeStartedAt = new Date().toISOString();
+        }
+      }
+    }
+    saveState(state);
+    closeRoutineModal();
+    renderAll();
+  }
+
+  document.getElementById("btnNewRoutine").addEventListener("click", function(){ openRoutineModal(null); });
+  document.getElementById("btnSaveRoutine").addEventListener("click", saveRoutine);
+  document.getElementById("btnCancelRoutine").addEventListener("click", closeRoutineModal);
+  routineOverlay.addEventListener("click", function(e){ if(e.target === routineOverlay) closeRoutineModal(); });
+  document.getElementById("routineTitle").addEventListener("keydown", function(e){ if(e.key === "Enter") saveRoutine(); });
+  document.getElementById("routineDaysAll").addEventListener("click", function(){ routineSelectedDays = [0,1,2,3,4,5,6]; renderRoutineDayChips(); });
+  document.getElementById("routineDaysWeek").addEventListener("click", function(){ routineSelectedDays = [1,2,3,4,5]; renderRoutineDayChips(); });
+  document.getElementById("btnDeleteRoutine").addEventListener("click", function(){
+    var r = state.routines.find(function(x){ return x.id === editingRoutineId; });
+    if(!r) return;
+    if(!confirm("Excluir a tarefa fixa \"" + r.title + "\"? O tempo registrado nela também sai do relatório.")) return;
+    state.routines = state.routines.filter(function(x){ return x.id !== r.id; });
+    saveState(state);
+    closeRoutineModal();
+    renderAll();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#routinesScope button"), function(b){
+    b.addEventListener("click", function(){ routineScope = b.dataset.scope; renderRoutines(); });
+  });
+  (function initRoutinesCollapse(){
+    var section = document.getElementById("routinesSection");
+    try{ if(localStorage.getItem(ROUTINES_COLLAPSED_KEY) === "1") section.classList.add("collapsed"); }catch(e){}
+    document.getElementById("btnToggleRoutines").addEventListener("click", function(){
+      var c = section.classList.toggle("collapsed");
+      try{ localStorage.setItem(ROUTINES_COLLAPSED_KEY, c ? "1" : "0"); }catch(e){}
+    });
+  })();
+
   function applyManualTime(){
     var task = state.tasks.find(function(t){ return t.id===ui.editingTaskId; });
     if(!task) return;
@@ -1581,13 +2014,17 @@
   document.getElementById("calcMinutesInput").addEventListener("change", applyManualTime);
 
   function anyTimerActive(){
-    return state.tasks.some(function(t){ return !!t.activeStartedAt; });
+    return state.tasks.some(function(t){ return !!t.activeStartedAt; }) ||
+           (state.routines||[]).some(function(r){ return !!r.activeStartedAt; });
   }
   function startTimer(taskId){
     state.tasks.forEach(function(t){
       if(t.activeStartedAt && t.assigneeId===currentUserId && t.id!==taskId){
         closeSession(t);
       }
+    });
+    state.routines.forEach(function(r){
+      if(r.activeStartedAt && r.assigneeId===currentUserId) closeRoutineSession(r);
     });
     var task = state.tasks.find(function(t){ return t.id===taskId; });
     if(task){ task.activeStartedAt = new Date().toISOString(); }
@@ -2116,6 +2553,7 @@
     renderQuickFilters();
     renderPriorityFilters();
     renderClearFiltersBtn();
+    renderRoutines();
     if(ui.view==="kanban"){
       document.getElementById("kanbanView").style.display = "";
       document.getElementById("timelineView").style.display = "none";
@@ -3044,6 +3482,11 @@
         });
       }
     });
+    state.routines.forEach(function(r){
+      var pseudo = {id:"r_" + r.id, title:"🔁 " + r.title};
+      r.timeLog.forEach(function(e){ add(r.assigneeId, pseudo, e.date, e.seconds); });
+      routineLiveChunks(r).forEach(function(c){ add(r.assigneeId, pseudo, c.date, c.seconds); });
+    });
     var rows = Object.keys(buckets).map(function(k){
       var r = buckets[k];
       r.seconds = Math.round(r.seconds/60) * 60; // minutos inteiros, pra conferir fácil
@@ -3438,7 +3881,7 @@
     currentTeamId = null; setSessionTeamId(null);
     currentUserId = null; setSessionUserId(null);
     stateDocRef = null;
-    state.name = ""; state.inviteCode = ""; state.ownerId = null; state.team = []; state.tasks = [];
+    state.name = ""; state.inviteCode = ""; state.ownerId = null; state.team = []; state.tasks = []; state.routines = [];
     hideAllLoginSteps();
     onboardChoiceEl.style.display = "";
   });
@@ -3576,6 +4019,7 @@
         state.ownerId = data.ownerId || null;
         state.team = data.team || [];
         state.tasks = data.tasks || [];
+        state.routines = data.routines || [];
         normalizeState(state);
         hasBootedApp = true;
         attachTeamListener(idx.teamId);
@@ -3634,6 +4078,7 @@
       inviteCode: inviteCode,
       team: [{id:ownerMemberId, name:ownerName, role:ownerRole, color:BRAND_BLACK, pin:pin, photo:null, isAdmin:true}],
       tasks: [],
+      routines: [],
       createdAt: new Date().toISOString()
     };
     document.getElementById("createTeamSubmit").disabled = true;
@@ -3647,6 +4092,7 @@
       state.ownerId = newDoc.ownerId;
       state.team = newDoc.team;
       state.tasks = newDoc.tasks;
+      state.routines = newDoc.routines;
       hasBootedApp = true;
       attachTeamListener(docRef.id);
       registerNameIndex(ownerName, docRef.id, ownerMemberId);
@@ -3703,6 +4149,7 @@
       state.ownerId = data.ownerId || null;
       state.team = data.team || [];
       state.tasks = data.tasks || [];
+      state.routines = data.routines || [];
       normalizeState(state);
       hasBootedApp = true;
       attachTeamListener(docSnap.id);
@@ -3789,7 +4236,7 @@
         currentTeamId = null; setSessionTeamId(null);
         currentUserId = null; setSessionUserId(null);
         stateDocRef = null;
-        state.name = ""; state.inviteCode = ""; state.ownerId = null; state.team = []; state.tasks = [];
+        state.name = ""; state.inviteCode = ""; state.ownerId = null; state.team = []; state.tasks = []; state.routines = [];
         hasBootedApp = true;
         hideAllLoginSteps();
         onboardChoiceEl.style.display = "";
@@ -3802,6 +4249,7 @@
       state.ownerId = data.ownerId || null;
       state.team = data.team || [];
       state.tasks = data.tasks || [];
+      state.routines = data.routines || [];
       normalizeState(state);
       onStateUpdated();
     }, function(err){
