@@ -4,7 +4,7 @@
 // new deploy shows up right away instead of needing a manual cache clear.
 // Firestore data still needs an internet connection to sync.
 
-var CACHE_NAME = "workmana-shell-v25";
+var CACHE_NAME = "workmana-shell-v26";
 var APP_SHELL = [
   "./",
   "./index.html",
